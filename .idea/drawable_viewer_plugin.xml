@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidDrawableViewer">
+    <option name="drawableHdpi" value="true" />
+    <option name="drawableMdpi" value="true" />
+    <option name="drawableXhdpi" value="true" />
+    <option name="drawableXxhdpi" value="true" />
+    <option name="drawableXxxhdpi" value="true" />
+    <option name="mipmapHdpi" value="true" />
+    <option name="mipmapMdpi" value="true" />
+    <option name="mipmapXhdpi" value="true" />
+    <option name="mipmapXxhdpi" value="true" />
+    <option name="mipmapXxxhdpi" value="true" />
+    <option name="srcDir" value="$PROJECT_DIR$/app/src" />
+  </component>
+</project>
