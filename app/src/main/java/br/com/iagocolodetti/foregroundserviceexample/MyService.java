@@ -15,7 +15,11 @@ import android.text.Spanned;
 import android.util.Log;
 
 import androidx.core.text.HtmlCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MyService extends Service {
 
@@ -24,6 +28,9 @@ public class MyService extends Service {
     IBinder mBinder = new LocalBinder();
 
     private String text;
+
+    private Timer timer;
+    private int seconds = 0;
 
     private final int CURRENT_TIME_MILLIS = ((int) System.currentTimeMillis());
     private final int INTENT_REQUEST_CODE = CURRENT_TIME_MILLIS;
@@ -81,6 +88,7 @@ public class MyService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(CLASS_NAME, "onCreate()");
+        timer = new Timer();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         text = preferences.getString("text", "Example");
         doSomething = new DoSomething(MyService.this, text);
@@ -97,12 +105,16 @@ public class MyService extends Service {
     private void startService() {
         SingletonServiceManager.isMyServiceRunning = true;
         doSomething.start();
+        timer.scheduleAtFixedRate(new serviceRunning(), 1, 1000);
         Log.d(CLASS_NAME, "startService()");
     }
 
     private void stopService() {
         SingletonServiceManager.isMyServiceRunning = false;
         doSomething.stop();
+        timer.cancel();
+        timer.purge();
+        sendSecondsToActivity(0);
         Log.d(CLASS_NAME, "stopService()");
     }
 
@@ -122,5 +134,23 @@ public class MyService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
+    }
+
+    private class serviceRunning extends TimerTask {
+        public void run() {
+            try {
+                sendSecondsToActivity(seconds);
+                Log.d(CLASS_NAME, "serviceRunning(): " + seconds);
+                seconds++;
+            } catch (Exception ex) {
+                Log.e(CLASS_NAME, "serviceRunning(): " + ex.getMessage());
+            }
+        }
+    }
+
+    private void sendSecondsToActivity(int seconds) {
+        Intent intent = new Intent("myService");
+        intent.putExtra("seconds", seconds);
+        LocalBroadcastManager.getInstance(MyService.this).sendBroadcast(intent);
     }
 }

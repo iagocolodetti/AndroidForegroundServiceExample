@@ -1,11 +1,14 @@
 package br.com.iagocolodetti.foregroundserviceexample;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -25,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private MyService myService;
 
     private TextView tvServiceStatus;
+    private TextView tvServiceSeconds;
     private EditText etText;
     private TextView tvText;
 
@@ -34,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         tvServiceStatus = findViewById(R.id.tvServiceStatus);
+        tvServiceSeconds = findViewById(R.id.tvServiceSeconds);
         etText = findViewById(R.id.etText);
         tvText = findViewById(R.id.tvText);
         Button btChangeText = findViewById(R.id.btChangeText);
@@ -129,6 +134,26 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ex) {
             Log.e(CLASS_NAME, "onStart(): " + ex.getMessage());
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("myService"));
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int seconds = intent.getIntExtra("seconds", 0);
+            tvServiceSeconds.setText(getString(R.string.tv_service_seconds, seconds));
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        super.onPause();
     }
 
     @Override

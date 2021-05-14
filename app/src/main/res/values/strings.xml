@@ -2,6 +2,8 @@
     <string name="app_name">ForegroundServiceExample</string>
     <string name="tv_service_status_off">Service is not running</string>
     <string name="tv_service_status_on">Service is running</string>
+    <string name="tv_service_seconds_initial">0 second(s)</string>
+    <string name="tv_service_seconds">%d second(s)</string>
     <string name="et_text">Example</string>
     <string name="et_text_hint">Service text</string>
     <string name="bt_change_text">Change Service Text</string>
